@@ -21,6 +21,7 @@ public class WordCountReduce extends MapReduceBase implements Reducer<Text,IntWr
 
     @Override
     public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> outputCollector, Reporter reporter) throws IOException {
+        logger.info("-----------------reduce---------------");
         int sum = 0;
         while (values.hasNext()) {
             sum += values.next().get();

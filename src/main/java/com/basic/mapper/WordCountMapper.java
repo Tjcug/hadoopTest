@@ -69,10 +69,17 @@ public class WordCountMapper extends MapReduceBase implements Mapper<LongWritabl
             line = line.replaceAll(pattern, "");
         }
 
+        System.out.println("sout-->map key:" + key.toString());
+        logger.info("LOG-->map key:" +  key.toString());
+        System.out.println("sout-->map value:" + value.toString());
+        logger.info("LOG-->map value:" +  value.toString());
+
         StringTokenizer tokenizer = new StringTokenizer(line);
         while (tokenizer.hasMoreTokens()) {
             word.set(tokenizer.nextToken());
             output.collect(word, one);
+            System.out.println("sout-->map 分词后 word:" + word.toString());
+            logger.info("LOG-->map 分次后 word:" +  word.toString());
             reporter.incrCounter(Counters.INPUT_WORDS, 1);
         }
 

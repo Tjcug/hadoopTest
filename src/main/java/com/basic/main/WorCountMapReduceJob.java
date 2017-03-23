@@ -31,7 +31,7 @@ public class WorCountMapReduceJob extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
-        JobConf conf = new JobConf(getConf(), WordCount.class);
+        JobConf conf = new JobConf(getConf(), WorCountMapReduceJob.class);
         conf.setJobName(jobname);
 
         conf.setOutputKeyClass(Text.class);
@@ -64,7 +64,7 @@ public class WorCountMapReduceJob extends Configured implements Tool {
     public static final String jobname="wordcount-mapreduce";
 
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCount(), args);
+        int res = ToolRunner.run(new Configuration(), new WorCountMapReduceJob(), args);
         System.exit(res);
     }
 
