@@ -53,7 +53,7 @@ public class WorCountMapReduceJob {
                 InterruptedException {
             conf = context.getConfiguration();
             caseSensitive = conf.getBoolean("wordcount.case.sensitive", true);
-            if (conf.getBoolean("wordcount.skip.patterns", true)) {
+            if (conf.getBoolean("wordcount.skip.patterns", false)) {
                 URI[] patternsURIs = Job.getInstance(conf).getCacheFiles();
                 for (URI patternsURI : patternsURIs) {
                     Path patternsPath = new Path(patternsURI.getPath());
