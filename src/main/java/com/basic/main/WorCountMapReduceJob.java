@@ -36,7 +36,7 @@ public class WorCountMapReduceJob extends Configured implements Tool {
 
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(IntWritable.class);
-
+        //conf.setNumReduceTasks(10);//指定个数的ReuduceTask来运行任务
         conf.setMapperClass(WordCountMapper.class);
         conf.setCombinerClass(WordCountReduce.class);
         conf.setReducerClass(WordCountReduce.class);
