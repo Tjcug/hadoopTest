@@ -28,7 +28,6 @@ public class GetSplitMapReduce {
             System.err.println("Usage databaseV1 <inputpath> <outputpath>");
         }
 
-
         Job job = Job.getInstance(conf, GetSplitMapReduce.class.getSimpleName() + "1");
         job.setJarByClass(GetSplitMapReduce.class);
         job.setMapOutputKeyClass(Text.class);
@@ -40,6 +39,7 @@ public class GetSplitMapReduce {
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
+        //FileInputFormat.setMaxInputSplitSize(job,1);
         FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
         job.waitForCompletion(true);
     }
