@@ -57,6 +57,13 @@
       <version>2.6.2</version>
         <scope>provided</scope>
     </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.mrunit/mrunit -->
+      <!--<dependency>-->
+          <!--<groupId>org.apache.mrunit</groupId>-->
+          <!--<artifactId>mrunit</artifactId>-->
+          <!--<version>1.1.0</version>-->
+      <!--</dependency>-->
   </dependencies>
 
   <build>
@@ -131,4 +138,18 @@
       </plugin>
       </plugins>
   </build>
+
+    <!--配置maven仓库地址-->
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+
+        <repository>
+            <id>apache repo</id>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 </project>

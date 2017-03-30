@@ -261,5 +261,23 @@ public class HdfsOperationUtil {
         }
     }
 
+    /**
+     * 列出输入文件目录下所有文件大小 不包括子文件
+     * @param path 输入文件路径
+     * @return
+     * @throws IOException
+     */
+    public long getInputDirectoryLength(String path) throws IOException {
+        FileStatus fileStatus[]=fs.listStatus(new Path(path));
+        long length=0L;
+        for (int i=0 ;i<fileStatus.length ;i++){
+            FileStatus fileStatu = fileStatus[i];
+            if (fileStatu.isDirectory() == false) {
+                length+=fileStatu.getLen();
+            }
+        }
+        return length;
+    }
+
 }
 

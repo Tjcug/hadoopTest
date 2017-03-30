@@ -4,10 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counter;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
@@ -22,17 +19,17 @@ import java.util.*;
 /**
  * Created by 79875 on 2017/3/21.
  * hdfs dfs -rm -r wordcount/output
- * hadoop 提交任务 hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WorCountMapReduceJob /user/root/wordcount/input /user/root/wordcount/output
+ * hadoop 提交任务 hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WordCountMapReduce2Job /user/root/wordcount/input /user/root/wordcount/output
  *  两个文件256M*2
  *  	Launched map tasks=20
  *      Launched reduce tasks=20
  *
  * 打开大小写敏感-Dwordcount.case.sensitive=true
- * hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WorCountMapReduceJob -Dwordcount.case.sensitive=true /user/root/wordcount/input /user/root/wordcount/output -skip /user/root/wordcount/patterns.txt
+ * hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WordCountMapReduce2Job -Dwordcount.case.sensitive=true /user/root/wordcount/input /user/root/wordcount/output -skip /user/root/wordcount/patterns.txt
  *              //跳过敏感词汇
  */
 
-public class WorCountMapReduceJob {
+public class WordCountMapReduce2Job {
 
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable>{
@@ -113,6 +110,8 @@ public class WorCountMapReduceJob {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        conf.set(MRJobConfig.NUM_MAPS,"20");//设置job的map任务个数
+        //conf.set(MRJobConfig.NUM_REDUCES,"20");//设置job的reduce任务个数
         GenericOptionsParser optionParser = new GenericOptionsParser(conf, args);
         String[] remainingArgs = optionParser.getRemainingArgs();
         if (!(remainingArgs.length != 2 || remainingArgs.length != 4)) {
@@ -120,7 +119,7 @@ public class WorCountMapReduceJob {
             System.exit(2);
         }
         Job job = Job.getInstance(conf, "word count");
-        job.setJarByClass(WorCountMapReduceJob.class);
+        job.setJarByClass(WordCountMapReduce2Job.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);

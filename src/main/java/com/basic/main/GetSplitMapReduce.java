@@ -1,5 +1,6 @@
 package com.basic.main;
 
+import com.basic.inputformat.RowInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -10,10 +11,10 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 /**
@@ -21,6 +22,8 @@ import java.io.IOException;
  * hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.GetSplitMapReduce /user/root/wordcount/input /user/root/wordcount/output
  */
 public class GetSplitMapReduce {
+    private static Logger logger= Logger.getLogger(GetSplitMapReduce.class);
+
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
@@ -36,7 +39,7 @@ public class GetSplitMapReduce {
         job.setOutputValueClass(NullWritable.class);
         job.setMapperClass(MyMapper1.class);
         job.setNumReduceTasks(0);
-        job.setInputFormatClass(TextInputFormat.class);
+        job.setInputFormatClass(RowInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
         //FileInputFormat.setMaxInputSplitSize(job,1);
@@ -58,7 +61,7 @@ public class GetSplitMapReduce {
             long start = fileSplit.getStart(); //The position of the first byte in the file to process.
             String string = fileSplit.toString();
             //fileSplit.
-
+            logger.info("mapper key:"+key.get()+" value:"+value.toString().substring(0,5));
             context.write(new Text("===================================================================================="), NullWritable.get());
             context.write(new Text("pathname--"+pathname), NullWritable.get());
             context.write(new Text("depth--"+depth), NullWritable.get());
