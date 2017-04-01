@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by 79875 on 2017/3/21.
  * hdfs dfs -rm -r wordcount/output
- * hadoop 提交任务 hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WordCountMapReduce2Job /user/root/wordcount/input /user/root/wordcount/output
+ * hadoop 提交任务 hadoop jar hadoopTest-1.0-SNAPSHOT.jar com.basic.main.WordCountMapReduce2Job /user/root/hadoopkafkainput/input /user/root/hadoopkafkainput/output
  *  两个文件256M*2
  *  	Launched map tasks=20
  *      Launched reduce tasks=20

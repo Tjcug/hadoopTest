@@ -33,6 +33,19 @@ public class HdfsOperationUtil {
             e.printStackTrace();
         }
     }
+
+    public static FileSystem getFs() {
+        return fs;
+    }
+
+    public static Configuration getConf() {
+        return conf;
+    }
+
+    public static void setConf(Configuration conf) {
+        HdfsOperationUtil.conf = conf;
+    }
+
     /**
      * 列出所有DataNode的名字信息
      */
@@ -246,19 +259,19 @@ public class HdfsOperationUtil {
      * @throws IllegalArgumentException
      * @throws FileNotFoundException
      */
-    public void listFileStatus(String path) throws FileNotFoundException, IllegalArgumentException, IOException {
+    public List<FileStatus> listFileStatus(String path) throws FileNotFoundException, IllegalArgumentException, IOException {
         FileStatus fileStatus[]=fs.listStatus(new Path(path));
+        List list=new ArrayList();
         int listlength=fileStatus.length;
         for (int i=0 ;i<listlength ;i++){
             if (fileStatus[i].isDirectory() == false) {
                 System.out.println("filename:"
                         + fileStatus[i].getPath().getName() + "\tsize:"
                         + fileStatus[i].getLen());
-            } else {
-                String newpath = fileStatus[i].getPath().toString();
-                listFileStatus(newpath);
             }
+            list.add(fileStatus[i]);
         }
+        return list;
     }
 
     /**
