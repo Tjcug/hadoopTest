@@ -65,6 +65,7 @@ public class KafkaInputMapReduceJob {
         private boolean m_bool=true;
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
+            kafkaUtil.init();
             logger.info("----------reduce setup-----------");
             configuration=context.getConfiguration();
         }

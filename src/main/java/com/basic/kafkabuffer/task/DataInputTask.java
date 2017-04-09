@@ -40,6 +40,7 @@ public class DataInputTask implements Runnable {
 
     private FileSystem fileSystem;//Hdfs文件系统
 
+    private static int block_num=0;
 
     public DataInputTask(ByteBuffer byteBuffer,InputSplit inputSplit) throws IOException {
         this.byteBuffer = byteBuffer;
@@ -83,9 +84,19 @@ public class DataInputTask implements Runnable {
     public void run() {
         try {
             initialize(this.fileSplit);
-            fileIn.read(byteBuffer);
+            //byteBuffer.flip();
+            //fileIn.read(byteBuffer);
+            byte buf[]=new byte[byteBuffer.capacity()];
+            fileIn.readFully(buf,0,byteBuffer.capacity());
+            System.out.println("DataInputTask: "+byteBuffer+" block_num"+block_num);
+            byteBuffer.put(buf,0,byteBuffer.capacity());
+            byteBuffer.clear();
+            block_num++;
+            System.gc();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 }

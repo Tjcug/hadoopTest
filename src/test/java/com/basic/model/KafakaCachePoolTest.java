@@ -1,5 +1,6 @@
 package com.basic.model;
 
+import com.basic.kafkabuffer.model.KafakaCachePool;
 import org.junit.Test;
 
 /**
