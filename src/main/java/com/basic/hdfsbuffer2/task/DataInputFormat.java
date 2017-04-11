@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer.task;
+package com.basic.hdfsbuffer2.task;
 
 import com.basic.util.HdfsOperationUtil;
 import org.apache.hadoop.fs.*;

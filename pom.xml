@@ -130,7 +130,7 @@
                               <transformer
                                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                   <manifestEntries>
-                                      <!--<Main-Class>com.basic.main.CopyFileToHDFSBlockMain</Main-Class>-->
+                                      <!--<KafkaDataOutputMain-Class>com.basic.main.CopyFileToHDFSBlockMaKafkaDataOutputMain-Class>&ndash;&gt;-->
                                   </manifestEntries>
                               </transformer>
                           </transformers>

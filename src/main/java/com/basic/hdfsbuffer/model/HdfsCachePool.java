@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer.model;
+package com.basic.hdfsbuffer.model;
 
 import org.apache.hadoop.mapreduce.InputSplit;
 
@@ -9,18 +9,18 @@ import java.util.List;
 /**
  * Created by 79875 on 2017/4/1.'
  */
-public class KafakaCachePool {
-    private static KafakaCachePool instance;//缓存池唯一实例
+public class HdfsCachePool {
+    private static HdfsCachePool instance;//缓存池唯一实例
 
     private ByteBuffer[] bufferArray;
 
     private int bufferNum=20;
 
-    public KafakaCachePool(List<InputSplit> inputSplitList) throws IOException, InterruptedException {
+    public HdfsCachePool(List<InputSplit> inputSplitList) throws IOException, InterruptedException {
         init(inputSplitList);
     }
 
-    public KafakaCachePool(int bufferNum) {
+    public HdfsCachePool(int bufferNum) {
         bufferArray=new ByteBuffer[bufferNum];
     }
 
@@ -37,26 +37,27 @@ public class KafakaCachePool {
      * 得到唯一实例
      * @return
      */
-    public synchronized static KafakaCachePool getInstance(){
+    public synchronized static HdfsCachePool getInstance(){
 //        if(instance == null){
-//            instance = new KafakaCachePool();
+//            instance = new HdfsCachePool();
 //        }
         return instance;
     }
 
-    public synchronized static KafakaCachePool getInstance(List<InputSplit> inputSplitList) throws IOException, InterruptedException {
-        instance = new KafakaCachePool(inputSplitList);
+    public synchronized static HdfsCachePool getInstance(List<InputSplit> inputSplitList) throws IOException, InterruptedException {
+        instance = new HdfsCachePool(inputSplitList);
         return instance;
     }
 
-    public synchronized static KafakaCachePool getInstance(int bufferNum) throws IOException, InterruptedException {
-        instance = new KafakaCachePool(bufferNum);
+    public synchronized static HdfsCachePool getInstance(int bufferNum) throws IOException, InterruptedException {
+        instance = new HdfsCachePool(bufferNum);
         return instance;
     }
 
     public void setInstance(int bufferindexm,InputSplit inputSplit) throws IOException, InterruptedException {
         bufferArray[bufferindexm]=ByteBuffer.allocate((int) inputSplit.getLength());
     }
+
     public void datainputBuffer(){
 
     }

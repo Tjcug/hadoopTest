@@ -1,7 +1,7 @@
-package com.basic.kafkabuffer.task;
+package com.basic.hdfsbuffer.task;
 
-import com.basic.kafkabuffer.BufferLineReader;
-import com.basic.kafkabuffer.model.KafakaCachePool;
+import com.basic.hdfsbuffer.BufferLineReader;
+import com.basic.hdfsbuffer.model.HdfsCachePool;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.junit.Test;
@@ -25,9 +25,9 @@ public class Main {
         DataInputFormat dataInputFormat=new DataInputFormat();
         List<InputSplit> splits = dataInputFormat.getSplits("/user/root/wordcount/input/1.log");
         int CachePoolBufferNum=10;
-        KafakaCachePool kafakaCachePool=KafakaCachePool.getInstance(splits.subList(0,CachePoolBufferNum));
+        HdfsCachePool hdfsCachePool = HdfsCachePool.getInstance(splits.subList(0,CachePoolBufferNum));
         for(int i=0;i<CachePoolBufferNum;i++){
-            DataInputTask dataInputTask=new DataInputTask(kafakaCachePool.getBufferArray()[i],splits.get(0));
+            DataInputTask dataInputTask=new DataInputTask(hdfsCachePool.getBufferArray()[i],splits.get(0));
             executor.execute(dataInputTask);
         }
         Thread.sleep(10000);
@@ -42,9 +42,9 @@ public class Main {
         List<InputSplit> splits = dataInputFormat.getSplits(str1);
         int splitsReaming=splits.size();//数据块剩余多少
         int CachePoolBufferNum=3;//缓冲池缓存Block大小
-        KafakaCachePool kafakaCachePool=KafakaCachePool.getInstance(splits.subList(0,CachePoolBufferNum));
+        HdfsCachePool hdfsCachePool = HdfsCachePool.getInstance(splits.subList(0,CachePoolBufferNum));
         for(int i=0;i<CachePoolBufferNum;i++){
-            DataInputTask dataInputTask=new DataInputTask(kafakaCachePool.getBufferArray()[i],splits.get(i));
+            DataInputTask dataInputTask=new DataInputTask(hdfsCachePool.getBufferArray()[i],splits.get(i));
             executor.execute(dataInputTask);
         }
         splitsReaming-=CachePoolBufferNum;
@@ -53,7 +53,7 @@ public class Main {
             Thread.sleep(1000);
         }
         for(int j=0;j<CachePoolBufferNum;j++){
-            ByteBuffer byteBuffer = kafakaCachePool.getBufferArray()[j];
+            ByteBuffer byteBuffer = hdfsCachePool.getBufferArray()[j];
             System.out.println(byteBuffer);
             BufferLineReader bufferLineReader=new BufferLineReader(byteBuffer);
             Text text=new Text();
@@ -67,7 +67,7 @@ public class Main {
 
     @Test
     public void main() throws Exception {
-        com.basic.kafkabuffer.Main.runTest();
+        com.basic.hdfsbuffer.Main.runTest();
     }
 
     @Test

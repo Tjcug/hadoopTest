@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer.task;
+package com.basic.hdfsbuffer.task;
 
 import com.basic.util.HdfsOperationUtil;
 import org.apache.commons.logging.Log;

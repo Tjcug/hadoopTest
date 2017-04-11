@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer;
+package com.basic.hdfsbuffer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

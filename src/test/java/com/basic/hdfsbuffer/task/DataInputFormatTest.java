@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer.task;
+package com.basic.hdfsbuffer.task;
 
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;

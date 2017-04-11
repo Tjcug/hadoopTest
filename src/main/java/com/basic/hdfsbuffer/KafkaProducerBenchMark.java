@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer;
+package com.basic.hdfsbuffer;
 
 import com.basic.util.KafkaUtil;
 import org.apache.commons.logging.Log;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 /**
  * locate com.basic.kafkabuffer
  * Created by 79875 on 2017/4/8.
- * 运行函数 java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.kafkabuffer.KafkaProducerBenchMark
+ * 运行函数 java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.hdfsbuffer.KafkaProducerBenchMark
  */
 public class KafkaProducerBenchMark {
     private static final Log LOG = LogFactory.getLog(KafkaProducerBenchMark.class);

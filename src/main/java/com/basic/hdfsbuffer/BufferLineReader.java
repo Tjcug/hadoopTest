@@ -1,4 +1,4 @@
-package com.basic.kafkabuffer;
+package com.basic.hdfsbuffer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
