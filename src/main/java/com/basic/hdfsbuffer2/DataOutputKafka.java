@@ -11,6 +11,7 @@ import java.io.IOException;
 /**
  * locate com.basic.hdfsbuffer2
  * Created by 79875 on 2017/4/11.
+ * HDFSCachePoll 的数据输出类 数据输出到Kafka中
  */
 public class DataOutputKafka {
     private static KafkaUtil kafkaUtil=KafkaUtil.getInstance();

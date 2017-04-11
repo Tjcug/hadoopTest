@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by 79875 on 2017/4/1.'
  */
-public class HdfsCachePool {
+public class  HdfsCachePool {
     private static final Log LOG = LogFactory.getLog(HdfsCachePool.class);
     private static HdfsCachePool instance;//缓存池唯一实例
 
