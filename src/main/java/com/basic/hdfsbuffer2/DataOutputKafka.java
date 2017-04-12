@@ -14,7 +14,9 @@ import java.io.IOException;
  * HDFSCachePoll 的数据输出类 数据输出到Kafka中
  */
 public class DataOutputKafka {
-    private static KafkaUtil kafkaUtil=KafkaUtil.getInstance();
+    private static int threadNum=1;
+    private static KafkaUtil kafkaUtil=new KafkaUtil(threadNum);
+
     private static final Log LOG = LogFactory.getLog(DataOutputKafka.class);
     private long Totalrows=0L;
     private long blockrows=0L;

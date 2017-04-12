@@ -3,6 +3,7 @@ package com.basic.util;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -12,10 +13,11 @@ import java.util.Properties;
  */
 public class KafkaUtil {
     private  BufferedReader in=null;
+
     /**
      * Producer的两个泛型，第一个指定Key的类型，第二个指定value的类型
      */
-    private Producer<String, String> producer;
+    private Producer<String, String>[] producerPool;
 
     private static KafkaUtil kafkaUtil;
 
@@ -27,7 +29,11 @@ public class KafkaUtil {
 
     private Properties  props = new Properties();
 
-    public KafkaUtil() {
+    private int threadNum=1;    //Producer个数默认为1
+
+    private int loopNum=0;      //轮询下标0
+
+    public void initProperties(){
         /**
          * 指定producer连接的broker列表
          */
@@ -86,21 +92,36 @@ public class KafkaUtil {
         props.put("max.request.size ",String.valueOf(1048576));
     }
 
+    public KafkaUtil() {
+        initProperties();
+        producerPool=new Producer[threadNum];
+        init();
+    }
+
+    public KafkaUtil(int threadNum) {
+        this.threadNum=threadNum;
+        initProperties();
+        producerPool=new Producer[this.threadNum];
+        init();
+    }
+
     /**
      * Kafka 订阅消息初始化函数
      */
     public void init(){
-        producer = new KafkaProducer<String, String>(props);
+        for(int i=0;i<threadNum;i++){
+            producerPool[i] = new KafkaProducer<String, String>(props);
+        }
     }
     /**
      * 根据topic和消息条数发送消息
      * @param topic
      */
     public void publishMessage(String topic,String key,String value) throws IOException {
-        if(producer==null){
+        if(producerPool.length==0){
             init();
         }
         // 做key Producer默认让key的hashcode如Partitions取模
-        producer.send(new ProducerRecord<String, String>(topic,key,value));
+        producerPool[loopNum++ % threadNum].send(new ProducerRecord<String, String>(topic,key,value));
     }
 }

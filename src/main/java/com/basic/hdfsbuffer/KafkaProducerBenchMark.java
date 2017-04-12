@@ -10,17 +10,19 @@ import java.sql.Timestamp;
 /**
  * locate com.basic.kafkabuffer
  * Created by 79875 on 2017/4/8.
- * 运行函数 java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.hdfsbuffer.KafkaProducerBenchMark
+ * 运行函数 java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.hdfsbuffer.KafkaProducerBenchMark 3
  */
 public class KafkaProducerBenchMark {
     private static final Log LOG = LogFactory.getLog(KafkaProducerBenchMark.class);
-    public static KafkaUtil kafkaUtil=KafkaUtil.getInstance();
+    public static KafkaUtil kafkaUtil;
 
     public static void main(String[] args) throws IOException {
+        int threadNum=Integer.valueOf(args[0]);
+        kafkaUtil=new KafkaUtil(threadNum);
         long startTimeSystemTime= System.currentTimeMillis();
         for(int i=0;i<3273604;i++){
             String str="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-            kafkaUtil.publishMessage("tweetswordtopic6",String.valueOf(i),str);
+            kafkaUtil.publishMessage("testTopic",String.valueOf(i),str);
         }
         long endTimeSystemTime = System.currentTimeMillis();
         LOG.info("startTime:"+new Timestamp(startTimeSystemTime));
