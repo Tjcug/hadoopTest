@@ -40,11 +40,12 @@ public class DataInputTask implements Runnable {
 
     private FileSystem fileSystem;//Hdfs文件系统
 
-    private static int block_num=0;
+    private int block_num;
 
-    public DataInputTask(ByteBuffer byteBuffer,InputSplit inputSplit) throws IOException {
+    public DataInputTask(ByteBuffer byteBuffer,InputSplit inputSplit,int block_num) throws IOException {
         this.byteBuffer = byteBuffer;
         this.fileSplit= (FileSplit) inputSplit;
+        this.block_num=block_num;
         fileSystem=HdfsOperationUtil.getFs();
     }
 
@@ -84,14 +85,20 @@ public class DataInputTask implements Runnable {
     public void run() {
         try {
             initialize(this.fileSplit);
-            //byteBuffer.flip();
-            //fileIn.read(byteBuffer);
-            byte buf[]=new byte[byteBuffer.capacity()];
-            fileIn.readFully(buf,0,byteBuffer.capacity());
-            System.out.println("DataInputTask: "+byteBuffer+" block_num"+block_num);
-            byteBuffer.put(buf,0,byteBuffer.capacity());
+
+//            byte buf[]=new byte[byteBuffer.capacity()];
+//            fileIn.readFully(buf,0,byteBuffer.capacity());
+//            System.out.println("DataInputTask: "+byteBuffer+" block_num: "+block_num);
+//            byteBuffer.put(buf,0,byteBuffer.capacity());
+            byte buf[]=new byte[4096];
+            int tmp=0;
+            while (byteBuffer.hasRemaining()){
+                fileIn.read(buf);
+                int length=(byteBuffer.remaining() > 4096) ?4096: byteBuffer.remaining();
+                byteBuffer.put(buf,0,length);
+            }
+            System.out.println("DataInputTask: "+byteBuffer+" block_num: "+block_num);
             byteBuffer.clear();
-            block_num++;
             System.gc();
         } catch (IOException e) {
             e.printStackTrace();

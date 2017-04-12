@@ -82,7 +82,7 @@ public class KafkaUtil {
 
         props.put("send.buffer.bytes",String.valueOf(131072*2));
 
-        props.put("receive.buffer.bytes",String.valueOf(32768*2));
+        props.put("receive.buffer.bytes",String.valueOf(32768));
 
         /**
          * 生成者缓存内存大小

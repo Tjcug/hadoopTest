@@ -95,9 +95,9 @@ public class  HdfsCachePool {
      * @param inputSplit  hdfs文件分片
      * @throws IOException
      */
-    public void datainputBuffer(int bufferBlock, InputSplit inputSplit) throws IOException, InterruptedException {
+    public void datainputBuffer(int bufferBlock, InputSplit inputSplit,int blockNum) throws IOException, InterruptedException {
         setInstance(bufferBlock,inputSplit);
-        DataInputTask dataInputTask = new DataInputTask(this.bufferArray[bufferBlock], inputSplit);
+        DataInputTask dataInputTask = new DataInputTask(this.bufferArray[bufferBlock], inputSplit,blockNum);
         executor.execute(dataInputTask);
     }
 
@@ -131,7 +131,8 @@ public class  HdfsCachePool {
      * @param Num 当前输出缓冲块的下标
      */
     public void bufferNextBlock(int Num) throws IOException, InterruptedException {
-        datainputBuffer(Num,inputSplitList.get(Num+bufferNum*loopNum));
+        LOG.debug("bufferNextBlock------------ NUM: "+Num+" inputSplitNum:"+(Num+bufferNum*loopNum)+" loopNum: "+loopNum);
+        datainputBuffer(Num,inputSplitList.get(Num+bufferNum*loopNum),Num+bufferNum*loopNum);
         loopTmp++;
         positionBlock++;
         if(loopTmp % bufferNum ==0){
