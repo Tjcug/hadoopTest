@@ -24,8 +24,11 @@ public class DataOutputKafka {
 
     private int blockPosition=0;
 
-    public DataOutputKafka(HdfsCachePool hdfsCachePool) {
+    private  int kafkaParitionsNum;
+
+    public DataOutputKafka(HdfsCachePool hdfsCachePool,int kafkaParitionsNum) {
         this.hdfsCachePool = hdfsCachePool;
+        this.kafkaParitionsNum=kafkaParitionsNum;
     }
 
     public void datoutputKafka(String kafkatopic) throws IOException, InterruptedException {
@@ -41,7 +44,8 @@ public class DataOutputKafka {
                     while (bufferLineReader.readLine(text)!=0){
                         Totalrows++;
                         blockrows++;
-                        kafkaUtil.publishMessage(kafkatopic, String.valueOf(Totalrows),text.toString());
+                        //kafkaUtil.publishMessage(kafkatopic, String.valueOf(Totalrows),text.toString());
+                        kafkaUtil.publishOrderMessage(kafkatopic,kafkaParitionsNum,(int)Totalrows,text.toString());
                         //System.out.println(text.toString());
                         //System.out.println(byteBuffer);
                     }

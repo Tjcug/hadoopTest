@@ -7,8 +7,9 @@ import org.junit.Test;
  */
 public class KafkaUtilTest {
     KafkaUtil kafkaUtil=KafkaUtil.getInstance();
+
     @Test
     public void testPublishMessage() throws Exception {
-        kafkaUtil.publishMessage("tweetswordtopic6","tanjie","123");
+        kafkaUtil.publishOrderMessage("tweetswordtopic5", 6,1,"123");
     }
 }

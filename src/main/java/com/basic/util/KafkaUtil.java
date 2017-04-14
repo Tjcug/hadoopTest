@@ -113,10 +113,19 @@ public class KafkaUtil {
             producerPool[i] = new KafkaProducer<String, String>(props);
         }
     }
+
     /**
-     * 根据topic和消息条数发送消息
+     * 根据topic和paritionNum发送消息
      * @param topic
      */
+    public void publishOrderMessage(String topic,Integer paritionNum,Integer key,String value){
+        if(producerPool.length==0){
+            init();
+        }
+        // 做key Producer默认让key的hashcode如Partitions取模
+        producerPool[loopNum++ % threadNum].send(new ProducerRecord<String, String>(topic,key % paritionNum,String.valueOf(key),value));
+    }
+
     public void publishMessage(String topic,String key,String value) throws IOException {
         if(producerPool.length==0){
             init();

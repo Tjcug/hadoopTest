@@ -14,7 +14,7 @@ import java.util.List;
  * locate com.basic.hdfsbuffer2
  * Created by 79875 on 2017/4/11.
  * HDFS文件时序性读取 Version 1.1
- * java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.hdfsbuffer2.KafkaDataOutputMain /user/root/wordcount/input/1.log 10  testTopic
+ * java -Xmx4028m -Xms4028m -cp hadoopTest-1.0-SNAPSHOT.jar com.basic.hdfsbuffer2.KafkaDataOutputMain /user/root/wordcount/input/1.log 10  testTopic 9
  */
 public class KafkaDataOutputMain {
     private static final Log LOG = LogFactory.getLog(KafkaDataOutputMain.class);
@@ -27,10 +27,11 @@ public class KafkaDataOutputMain {
         splits= dataInputFormat.getSplits(args[0]);
         int CachePoolBufferNum=Integer.valueOf(args[1]);//缓冲池缓存Block大小
         String kafkaTopic=args[2];//kafka的Topci
+        int kafkaPartitionsNum=Integer.valueOf(args[3]); //kafkaTopic 的分区个数保证数据均匀分布在Kafka分区中
         HdfsCachePool hdfsCachePool=HdfsCachePool.getInstance(CachePoolBufferNum,splits);
         hdfsCachePool.runHDFSCachePool();
 
-        dataOutputKafka=new DataOutputKafka(hdfsCachePool);
+        dataOutputKafka=new DataOutputKafka(hdfsCachePool,kafkaPartitionsNum);
         dataOutputKafka.datoutputKafka(kafkaTopic);
 
         long endTimeSystemTime = System.currentTimeMillis();
@@ -46,8 +47,8 @@ public class KafkaDataOutputMain {
         splits= dataInputFormat.getSplits(inputFile);
         HdfsCachePool hdfsCachePool=HdfsCachePool.getInstance(4,splits);
         hdfsCachePool.runHDFSCachePool();
-
-        dataOutputKafka=new DataOutputKafka(hdfsCachePool);
+        int kafkaPartitionsNum=6;
+        dataOutputKafka=new DataOutputKafka(hdfsCachePool,kafkaPartitionsNum);
         dataOutputKafka.datoutputKafka("abc");
 
         long endTimeSystemTime = System.currentTimeMillis();
