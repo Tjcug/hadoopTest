@@ -28,7 +28,7 @@ public class KafkaDataOutputMain {
         int CachePoolBufferNum=Integer.valueOf(args[1]);//缓冲池缓存Block大小
         String kafkaTopic=args[2];//kafka的Topci
         int kafkaPartitionsNum=Integer.valueOf(args[3]); //kafkaTopic 的分区个数保证数据均匀分布在Kafka分区中
-        HdfsCachePool hdfsCachePool=HdfsCachePool.getInstance(CachePoolBufferNum,splits);
+        HdfsCachePool hdfsCachePool= HdfsCachePool.getInstance(CachePoolBufferNum,splits);
         hdfsCachePool.runHDFSCachePool();
 
         dataOutputKafka=new DataOutputKafka(hdfsCachePool,kafkaPartitionsNum);
@@ -45,11 +45,11 @@ public class KafkaDataOutputMain {
     public void TestKafkaDataOutput(String inputFile) throws IOException, InterruptedException {
         long startTimeSystemTime= System.currentTimeMillis();
         splits= dataInputFormat.getSplits(inputFile);
-        HdfsCachePool hdfsCachePool=HdfsCachePool.getInstance(4,splits);
+        HdfsCachePool hdfsCachePool= HdfsCachePool.getInstance(4,splits);
         hdfsCachePool.runHDFSCachePool();
         int kafkaPartitionsNum=6;
         dataOutputKafka=new DataOutputKafka(hdfsCachePool,kafkaPartitionsNum);
-        dataOutputKafka.datoutputKafka("abc");
+        dataOutputKafka.datoutputKafka("testTopic");
 
         long endTimeSystemTime = System.currentTimeMillis();
         LOG.info("startTime:"+new Timestamp(startTimeSystemTime));
