@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 public class HDFSBuffer {
     public ByteBuffer byteBuffer;
     private boolean isBufferFinished=false;//是否缓存完毕，初始化缓存没完成
+    private boolean isBufferOutFinished=false;//是否Buffer输出完毕，初始化没有输出完毕。
 
     public HDFSBuffer(ByteBuffer byteBuffer, boolean isBufferFinished) {
         this.byteBuffer = byteBuffer;
@@ -17,6 +18,14 @@ public class HDFSBuffer {
 
     public HDFSBuffer() {
 
+    }
+
+    public boolean isBufferOutFinished() {
+        return isBufferOutFinished;
+    }
+
+    public void setBufferOutFinished(boolean bufferOutFinished) {
+        isBufferOutFinished = bufferOutFinished;
     }
 
     public ByteBuffer getByteBuffer() {

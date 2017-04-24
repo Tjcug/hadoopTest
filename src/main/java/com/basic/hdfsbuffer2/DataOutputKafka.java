@@ -41,6 +41,7 @@ public class DataOutputKafka {
                     while (!hdfsCachePool.isBufferBlockFinished(i)){
                         Thread.sleep(100);
                     }
+                    hdfsCachePool.getBufferArray()[i].setBufferOutFinished(false);
                     ByteBuffer byteBuffer = hdfsCachePool.getBufferArray()[i].byteBuffer;
                     BufferLineReader bufferLineReader=new BufferLineReader(byteBuffer);
                     Text text=new Text();
@@ -50,10 +51,11 @@ public class DataOutputKafka {
                         Totalrows++;
                         blockrows++;
                         //kafkaUtil.publishMessage(kafkatopic, String.valueOf(Totalrows),text.toString());
-                        kafkaUtil.publishOrderMessage(kafkatopic,kafkaParitionsNum,(int)Totalrows,text.toString());
+                        //kafkaUtil.publishOrderMessage(kafkatopic,kafkaParitionsNum,(int)Totalrows,text.toString());
                         //System.out.println(text.toString());
                         //System.out.println(byteBuffer);
                     }
+                    hdfsCachePool.getBufferArray()[i].setBufferOutFinished(true);
                     System.out.println("BlockRows : "+blockrows);
                     blockPosition++;
                     blockrows=0;

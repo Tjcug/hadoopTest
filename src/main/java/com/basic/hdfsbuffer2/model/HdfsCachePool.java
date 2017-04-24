@@ -1,6 +1,15 @@
 package com.basic.hdfsbuffer2.model;
 
+import com.basic.hdfsbuffer2.channelhandler.HDFSBufferHandler;
 import com.basic.hdfsbuffer2.task.DataInputTask;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -38,7 +47,17 @@ public class  HdfsCachePool {
         return activeBufferNum;
     }
 
+    private ChannelFuture channelFuture;//ServerSocket ChannelFuture
     //    private boolean isbufferfinish=false;   //是否缓存数据完毕
+
+    public ChannelFuture getChannelFuture() {
+        return channelFuture;
+    }
+
+    public void setChannelFuture(ChannelFuture channelFuture) {
+        this.channelFuture = channelFuture;
+    }
+
     /**
      * 线程池
      */
@@ -73,6 +92,7 @@ public class  HdfsCachePool {
     }
 
     public void setInstance(int bufferindex, InputSplit inputSplit) throws IOException, InterruptedException {
+        bufferArray[bufferindex].setBufferFinished(false);
         bufferArray[bufferindex].byteBuffer = ByteBuffer.allocate((int) inputSplit.getLength());
     }
 
@@ -138,6 +158,7 @@ public class  HdfsCachePool {
      */
     public void bufferNextBlock(int Num) throws IOException, InterruptedException {
         LOG.debug("bufferNextBlock------------ NUM: "+Num+" inputSplitNum:"+(Num+bufferNum*loopNum)+" loopNum: "+loopNum);
+        bufferArray[Num].setBufferOutFinished(false);
         datainputBuffer(Num,inputSplitList.get(Num+bufferNum*loopNum),Num+bufferNum*loopNum);
         loopTmp++;
         positionBlock++;
@@ -153,10 +174,11 @@ public class  HdfsCachePool {
      * @return
      */
     public boolean isBufferBlockoutFinished(int blocknum){
-        ByteBuffer byteBuffer = bufferArray[blocknum].byteBuffer;
-        if(byteBuffer.hasRemaining())
-            return false;
-        else return true;
+//        ByteBuffer byteBuffer = bufferArray[blocknum].byteBuffer;
+//        if(byteBuffer.hasRemaining())
+//            return false;
+//        else return true;
+        return bufferArray[blocknum].isBufferOutFinished();
     }
 
     /**
@@ -232,5 +254,39 @@ public class  HdfsCachePool {
         HdfsCachePoolControlTask hdfsCachePoolControlTask=new HdfsCachePoolControlTask();
         Thread thread2 = new Thread(hdfsCachePoolControlTask);
         thread2.start();
+    }
+
+    public void dataOutputChannel(int port){
+        //EventLoopGroup是用来处理IO操作的多线程事件循环器
+        //bossGroup 用来接收进来的连接
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        //workerGroup 用来处理已经被接收的连接
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            //启动 NIO 服务的辅助启动类
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    //配置 Channel
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch) throws Exception {
+                            // 注册handler
+                            ch.pipeline().addLast(new HDFSBufferHandler(getInstance()));
+                        }
+                    })
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+            // 绑定端口，开始接收进来的连接
+            channelFuture = b.bind(port).sync();
+            // 等待服务器 socket 关闭 。
+            channelFuture.channel().closeFuture().sync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
     }
 }
